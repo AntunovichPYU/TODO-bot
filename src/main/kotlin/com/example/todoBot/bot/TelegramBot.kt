@@ -47,6 +47,9 @@ class TelegramBot(
                         if (arguments.size < 2) getArgumentMessage(chatId)
                         else getDeleteMessage(chatId, arguments)
                     }
+                    "/mytasks" -> {
+                        getAllTasks(chatId)
+                    }
                     else -> getIllegalMessage(chatId)
                 }
             } else {
@@ -81,7 +84,8 @@ class TelegramBot(
                 "Формат даты: _YYYY-MM-DD HH:mm_. Новая задача имеет статус _TODO_\n" +
                 "/edit `{name}` `{new status}` - изменение статуса у уже существующей задачи. Варианты статусов: " +
                 "\n  _TODO_ - предстоит сделать, \n  _DONE_ - готово, \n  _DELAYED_ - отложено на неопределенный срок\n" +
-                "/delete `{name}` - удаление задачи\n"
+                "/delete `{name}` - удаление задачи\n" +
+                "/mytasks - список текущих задач\n"
                 )
         helpMessage.enableMarkdown(true)
         execute(helpMessage)
@@ -102,4 +106,10 @@ class TelegramBot(
         execute(SendMessage(chatId.toString(), deleteMessage))
     }
 
+    private fun getAllTasks(chatId: Long) {
+        val getMessage = taskService.getAll()
+        val sendMessage = SendMessage(chatId.toString(), "Ваши задачи: \n\n$getMessage")
+        sendMessage.enableMarkdown(true)
+        execute(sendMessage)
+    }
 }
