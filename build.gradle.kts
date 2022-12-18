@@ -21,6 +21,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 	implementation("org.telegram:telegrambots-spring-boot-starter:6.1.0")
 
 	runtimeOnly("org.postgresql:postgresql")

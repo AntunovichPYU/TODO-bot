@@ -50,6 +50,10 @@ class TelegramBot(
                     "/mytasks" -> {
                         getAllTasks(chatId)
                     }
+                    "/notify" -> {
+                        if (arguments.size < 4) getArgumentMessage(chatId)
+                        else getNotificationMessage(chatId, arguments)
+                    }
                     else -> getIllegalMessage(chatId)
                 }
             } else {
@@ -85,7 +89,10 @@ class TelegramBot(
                 "/edit `{name}` `{new status}` - изменение статуса у уже существующей задачи. Варианты статусов: " +
                 "\n  _TODO_ - предстоит сделать, \n  _DONE_ - готово, \n  _DELAYED_ - отложено на неопределенный срок\n" +
                 "/delete `{name}` - удаление задачи\n" +
-                "/mytasks - список текущих задач\n"
+                "/mytasks - список текущих задач\n" +
+                "/notify `{task}` `{time}` `{freq}`  - настроить частоту оповещений о выбранной задаче. " +
+                "Альтернативно:\n/notify `{task}` `{date}` `{time}`." +
+                "\n  _DAILY_ - ежедневно,\n  _WEEKLY_ - еженедельно,\n  _MONTHLY_ - ежемесячно,\n  _ONCE_ - один раз"
                 )
         helpMessage.enableMarkdown(true)
         execute(helpMessage)
@@ -109,6 +116,13 @@ class TelegramBot(
     private fun getAllTasks(chatId: Long) {
         val getMessage = taskService.getAll()
         val sendMessage = SendMessage(chatId.toString(), "Ваши задачи: \n\n$getMessage")
+        sendMessage.enableMarkdown(true)
+        execute(sendMessage)
+    }
+
+    private fun getNotificationMessage(chatId: Long, args: List<String>) {
+        val getMessage = taskService.setNotification(chatId, this, args)
+        val sendMessage = SendMessage(chatId.toString(), getMessage)
         sendMessage.enableMarkdown(true)
         execute(sendMessage)
     }
