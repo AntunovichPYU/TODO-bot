@@ -35,9 +35,13 @@ class TelegramBot(
                     "/help" -> {
                         getHelpMessage(chatId)
                     }
-                    "/add" ->{
+                    "/add" -> {
                         if (arguments.size < 4) getArgumentMessage(chatId)
                         else getAddMessage(chatId, arguments)
+                    }
+                    "/edit" -> {
+                        if (arguments.size < 3) getArgumentMessage(chatId)
+                        else getEditMessage(chatId, arguments)
                     }
                     else -> getIllegalMessage(chatId)
                 }
@@ -69,7 +73,10 @@ class TelegramBot(
     private fun getHelpMessage(chatId: Long) {
         val helpMessage = SendMessage(chatId.toString(), "Список доступных команд:\n\n" +
                 "/start - приветственное сообщение\n" +
-                "/add `{name}` `{deadline date}` `{deadline time}` - добавление новой задачи. "
+                "/add `{name}` `{deadline date}` `{deadline time}` - добавление новой задачи." +
+                "Формат даты: _YYYY-MM-DD HH:mm_. Новая задача имеет статус _TODO_\n" +
+                "/edit `{name}` `{new status}` - изменение статуса у уже существующей задачи. Варианты статусов: " +
+                "\n  _TODO_ - предстоит сделать, \n  _DONE_ - готово, \n  _DELAYED_ - отложено на неопределенный срок"
                 )
         helpMessage.enableMarkdown(true)
         execute(helpMessage)
@@ -78,6 +85,11 @@ class TelegramBot(
     private fun getAddMessage(chatId: Long, message: List<String>) {
         val addMessage = taskService.create(message)
         execute(SendMessage(chatId.toString(), addMessage))
+    }
+
+    private fun getEditMessage(chatId: Long, message: List<String>) {
+        val editMessage = taskService.update(message)
+        execute(SendMessage(chatId.toString(), editMessage))
     }
 
 }
