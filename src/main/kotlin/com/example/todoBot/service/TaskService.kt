@@ -7,6 +7,7 @@ import com.example.todoBot.util.Utils.Companion.dateFormat
 import com.example.todoBot.util.Utils.Companion.getTimeFromString
 import com.example.todoBot.util.Utils.Companion.statusFormat
 import com.example.todoBot.util.Utils.Companion.timeFormat
+import com.google.common.collect.Iterables
 import org.springframework.stereotype.Service
 import java.time.ZonedDateTime
 
@@ -57,5 +58,23 @@ class TaskService(private val tasksRepository: TasksRepository) {
         tasksRepository.delete(existingTask)
 
         return "Задача успешна удалена!"
+    }
+
+    fun getAll(): String {
+        val tasks = tasksRepository.findAll()
+        val sb = StringBuilder()
+        if (Iterables.isEmpty(tasks)) {
+            sb.append("Ой, здесь пусто UwU")
+            return sb.toString()
+        }
+        for (task: TaskModel in tasks) {
+            val name = task.name
+            val deadlineDate = task.deadline?.toLocalDate()
+            val deadlineTime = task.deadline?.toLocalTime()
+            val status = task.status
+            sb.append("*Название:* $name,  *срок:* $deadlineDate $deadlineTime,  *статус:* $status\n")
+        }
+
+        return sb.toString()
     }
 }
