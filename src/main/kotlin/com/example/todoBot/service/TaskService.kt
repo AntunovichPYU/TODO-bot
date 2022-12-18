@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit
 class TaskService(private val tasksRepository: TasksRepository) {
 
     private var scheduler = Executors.newSingleThreadScheduledExecutor()
+    private var deadlineChecker = Executors.newSingleThreadScheduledExecutor()
+
 
     fun create(arguments: List<String>): String {
         val deadlineDate = arguments[arguments.lastIndex - 1]
@@ -174,5 +176,31 @@ class TaskService(private val tasksRepository: TasksRepository) {
         return returnedMessage
     }
 
+    fun asyncTaskCheck(chatId: Long, sender: AbsSender) {
+        if (!deadlineChecker.isShutdown) deadlineChecker.shutdown()
+
+        deadlineChecker = Executors.newSingleThreadScheduledExecutor()
+        val action = Runnable {
+            val currentTime = ZonedDateTime.now()
+            val todoTasks = tasksRepository.findAll()
+            val expiredTasks = todoTasks.filter { it.status == Status.TODO && it.deadline!! < currentTime }
+            if (expiredTasks.isNotEmpty()) {
+                val executableMessage = StringBuilder(
+                    "А сроки то горят! У некоторых ваших задач просрочен дедлайн:\n\nназвание :      срок\n"
+                )
+                for (task: TaskModel in expiredTasks) {
+                    executableMessage.append(
+                        "\t${task.name} :  ${task.deadline?.toLocalDate()} ${task.deadline?.toLocalTime()}\n"
+                    )
+                }
+                sender.execute(SendMessage(chatId.toString(), executableMessage.toString()))
+            }
+        }
+        val updatePeriod = 30L
+        val initialDelay = 0L
+        val minutes = TimeUnit.MINUTES
+        deadlineChecker.scheduleAtFixedRate(action, initialDelay, updatePeriod, minutes)
+
+    }
 
 }

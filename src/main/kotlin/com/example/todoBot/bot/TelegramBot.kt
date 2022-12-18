@@ -31,6 +31,7 @@ class TelegramBot(
                 when (arguments[0]) {
                     "/start" -> {
                         getWelcomeMessage(chatId)
+                        taskService.asyncTaskCheck(chatId, this)
                     }
                     "/help" -> {
                         getHelpMessage(chatId)
