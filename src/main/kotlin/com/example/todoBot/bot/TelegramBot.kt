@@ -25,7 +25,12 @@ class TelegramBot: TelegramLongPollingBot() {
 
             if (message.hasText()) {
                 when (message.text) {
-                    "/start" -> execute(getWelcomeMessage(chatId))
+                    "/start" -> {
+                        execute(getWelcomeMessage(chatId))
+                    }
+                    "/help" -> {
+                        execute(getHelpMessage(chatId))
+                    }
                     else -> execute(getIllegalMessage(chatId))
                 }
             } else {
@@ -45,6 +50,15 @@ class TelegramBot: TelegramLongPollingBot() {
                 "чтобы узнать возможности бота")
         welcomeMessage.enableMarkdown(true)
         return welcomeMessage
+    }
+
+    private fun getHelpMessage(chatId: Long): SendMessage {
+        val helpMessage = SendMessage(chatId.toString(), "Список доступных команд:\n\n" +
+                "/start - приветственное сообщение\n" +
+                "/add `{name}` `{deadline date}` `{deadline time}` - добавление новой задачи. "
+                )
+        helpMessage.enableMarkdown(true)
+        return helpMessage
     }
 
 }
