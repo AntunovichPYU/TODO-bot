@@ -43,6 +43,10 @@ class TelegramBot(
                         if (arguments.size < 3) getArgumentMessage(chatId)
                         else getEditMessage(chatId, arguments)
                     }
+                    "/delete" -> {
+                        if (arguments.size < 2) getArgumentMessage(chatId)
+                        else getDeleteMessage(chatId, arguments)
+                    }
                     else -> getIllegalMessage(chatId)
                 }
             } else {
@@ -76,20 +80,26 @@ class TelegramBot(
                 "/add `{name}` `{deadline date}` `{deadline time}` - добавление новой задачи." +
                 "Формат даты: _YYYY-MM-DD HH:mm_. Новая задача имеет статус _TODO_\n" +
                 "/edit `{name}` `{new status}` - изменение статуса у уже существующей задачи. Варианты статусов: " +
-                "\n  _TODO_ - предстоит сделать, \n  _DONE_ - готово, \n  _DELAYED_ - отложено на неопределенный срок"
+                "\n  _TODO_ - предстоит сделать, \n  _DONE_ - готово, \n  _DELAYED_ - отложено на неопределенный срок\n" +
+                "/delete `{name}` - удаление задачи\n"
                 )
         helpMessage.enableMarkdown(true)
         execute(helpMessage)
     }
 
-    private fun getAddMessage(chatId: Long, message: List<String>) {
-        val addMessage = taskService.create(message)
+    private fun getAddMessage(chatId: Long, args: List<String>) {
+        val addMessage = taskService.create(args)
         execute(SendMessage(chatId.toString(), addMessage))
     }
 
-    private fun getEditMessage(chatId: Long, message: List<String>) {
-        val editMessage = taskService.update(message)
+    private fun getEditMessage(chatId: Long, args: List<String>) {
+        val editMessage = taskService.update(args)
         execute(SendMessage(chatId.toString(), editMessage))
+    }
+
+    private fun getDeleteMessage(chatId: Long, args: List<String>) {
+        val deleteMessage = taskService.delete(args)
+        execute(SendMessage(chatId.toString(), deleteMessage))
     }
 
 }

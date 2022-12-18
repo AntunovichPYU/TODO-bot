@@ -49,4 +49,13 @@ class TaskService(private val tasksRepository: TasksRepository) {
 
         return "Статус задачи успешно изменен!"
     }
+
+    fun delete(arguments: List<String>): String {
+        val name = arguments.subList(1, arguments.size).joinToString(" ")
+        val existingTask = tasksRepository.findByName(name)
+            ?: return "Не получится удалить то, чего не существует("
+        tasksRepository.delete(existingTask)
+
+        return "Задача успешна удалена!"
+    }
 }
