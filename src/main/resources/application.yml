@@ -4,6 +4,11 @@ spring:
     url: jdbc:postgresql://localhost:5432/tasks_db
     username: postgres
     password: "1973"
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
 telegram:
   botName: todo_task_manager_bot
   token: 5893091443:AAE0sC4VKHILLmvdgREQrBFv7eCUKLtF83o
