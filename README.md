@@ -71,3 +71,7 @@ Telegram-бот для вашего тайм-менеджмента
 ### Запуск в docker при помощи docker-compose
 
 В папке с проектом в командной строке вводим `docker compose --build`
+
+## Лицензия
+
+[Apache License](./LICENSE)
