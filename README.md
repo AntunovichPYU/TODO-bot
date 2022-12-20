@@ -1,3 +1,9 @@
+Main:
+[![Tests](https://github.com/AntunovichPYU/TODO-bot/actions/workflows/gradle-tests.yml/badge.svg?=main)](https://github.com/AntunovichPYU/TODO-bot/actions/workflows/gradle-tests.yml)
+
+Develop:
+[![Tests](https://github.com/AntunovichPYU/TODO-bot/actions/workflows/gradle-tests.yml/badge.svg?=develop)](https://github.com/AntunovichPYU/TODO-bot/actions/workflows/gradle-tests.yml)
+
 # TODO-bot
 Telegram-бот для вашего тайм-менеджмента 
 
